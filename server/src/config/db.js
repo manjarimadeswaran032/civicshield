@@ -23,7 +23,11 @@ export const connectDB = async () => {
 
   try {
     // Spin up in-memory MongoDB for zero-configuration testing & public demos
-    mongoMemoryServer = await MongoMemoryServer.create();
+    mongoMemoryServer = await MongoMemoryServer.create({
+  binary: {
+    version: '7.0.3'
+  }
+});
     const uri = mongoMemoryServer.getUri();
     const conn = await mongoose.connect(uri);
     console.log(`[DB] Connected to embedded in-memory MongoDB instance: ${uri}`);
