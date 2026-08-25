@@ -1,4 +1,8 @@
-const BASE_URL = 'https://civicshield-backend-h7p7.onrender.com//api';
+const BASE_URL = 'https://civicshield-backend-h7p7.onrender.com/api';
+
+export const getAuthToken = () => {
+  return localStorage.getItem('civicshield_token');
+};
 
 export const getAuthToken = () => {
   return localStorage.getItem('civicshield_token');
