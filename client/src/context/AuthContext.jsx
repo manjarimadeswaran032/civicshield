@@ -41,21 +41,20 @@ export const AuthProvider = ({ children }) => {
   try {
     const data = await api.post('/auth/login', { email, password });
 
-    console.log('Login response:', data);
-
     if (data.token && data.user) {
       setAuthToken(data.token);
       setUser(data.user);
       return data.user;
     }
 
-    throw new Error(data.message || 'Login failed. User information was not returned.');
+    throw new Error('Login failed. User information was not returned.');
+
   } catch (err) {
     setError(err.message);
     throw err;
   }
 };
-
+  
  const register = async (userData) => {
   setError(null);
 
