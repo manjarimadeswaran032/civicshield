@@ -16,45 +16,57 @@ export const LoginPage = () => {
   const from = location.state?.from?.pathname || null;
 
   const handleLoginSubmit = async (e) => {
-    e.preventDefault();
-    setError(null);
-    setLoading(true);
+  e.preventDefault();
+  setError(null);
+  setLoading(true);
 
-    try {
-      const user = await login(email, password);
-      if (from) {
-        navigate(from, { replace: true });
-      } else {
-        if (user.role === 'admin') navigate('/admin/dashboard');
-        else if (user.role === 'manager') navigate('/manager/dashboard');
-        else if (user.role === 'officer') navigate('/officer/dashboard');
-        else navigate('/citizen/dashboard');
-      }
-    } catch (err) {
-      setError(err.message || 'Login failed. Please check credentials.');
-    } finally {
-      setLoading(false);
+  try {
+    const user = await login(email, password);
+
+    if (!user) {
+      throw new Error('Login succeeded but user information was not returned.');
     }
-  };
 
-  const handleDemoLogin = async (demoEmail, demoPassword) => {
-    setEmail(demoEmail);
-    setPassword(demoPassword);
-    setError(null);
-    setLoading(true);
-    try {
-      const user = await login(demoEmail, demoPassword);
+    if (from) {
+      navigate(from, { replace: true });
+    } else {
       if (user.role === 'admin') navigate('/admin/dashboard');
       else if (user.role === 'manager') navigate('/manager/dashboard');
       else if (user.role === 'officer') navigate('/officer/dashboard');
       else navigate('/citizen/dashboard');
-    } catch (err) {
-      setError(err.message);
-    } finally {
-      setLoading(false);
     }
-  };
+  } catch (err) {
+    setError(err.message || 'Login failed. Please check credentials.');
+  } finally {
+    setLoading(false);
+  }
+};
+  
+  const handleDemoLogin = async (demoEmail, demoPassword) => {
+  setEmail(demoEmail);
+  setPassword(demoPassword);
+  setError(null);
+  setLoading(true);
 
+  try {
+    const user = await login(demoEmail, demoPassword);
+
+    if (!user) {
+      throw new Error('Login succeeded but user information was not returned.');
+    }
+
+    if (user.role === 'admin') navigate('/admin/dashboard');
+    else if (user.role === 'manager') navigate('/manager/dashboard');
+    else if (user.role === 'officer') navigate('/officer/dashboard');
+    else navigate('/citizen/dashboard');
+
+  } catch (err) {
+    setError(err.message || 'Login failed.');
+  } finally {
+    setLoading(false);
+  }
+};
+  
   return (
     <div className="py-12 bg-slate-50 min-h-[calc(100vh-4rem)] flex items-center justify-center px-4">
       <div className="max-w-md w-full space-y-6">
