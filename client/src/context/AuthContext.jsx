@@ -36,34 +36,46 @@ export const AuthProvider = ({ children }) => {
   };
 
   const login = async (email, password) => {
-    setError(null);
-    try {
-      const data = await api.post('/auth/login', { email, password });
-      if (data.token) {
-        setAuthToken(data.token);
-        setUser(data.user);
-        return data.user;
-      }
-    } catch (err) {
-      setError(err.message);
-      throw err;
-    }
-  };
+  setError(null);
 
-  const register = async (userData) => {
-    setError(null);
-    try {
-      const data = await api.post('/auth/register', userData);
-      if (data.token) {
-        setAuthToken(data.token);
-        setUser(data.user);
-        return data.user;
-      }
-    } catch (err) {
-      setError(err.message);
-      throw err;
+  try {
+    const data = await api.post('/auth/login', { email, password });
+
+    console.log('Login response:', data);
+
+    if (data.token && data.user) {
+      setAuthToken(data.token);
+      setUser(data.user);
+      return data.user;
     }
-  };
+
+    throw new Error(data.message || 'Login failed. User information was not returned.');
+  } catch (err) {
+    setError(err.message);
+    throw err;
+  }
+};
+
+ const register = async (userData) => {
+  setError(null);
+
+  try {
+    const data = await api.post('/auth/register', userData);
+
+    console.log('Register response:', data);
+
+    if (data.token && data.user) {
+      setAuthToken(data.token);
+      setUser(data.user);
+      return data.user;
+    }
+
+    throw new Error(data.message || 'Registration failed. User information was not returned.');
+  } catch (err) {
+    setError(err.message);
+    throw err;
+  }
+};
 
   const logout = async () => {
     try {
